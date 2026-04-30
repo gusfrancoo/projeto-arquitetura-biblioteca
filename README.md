@@ -1,17 +1,30 @@
-# Sistema de Gerenciamento de Biblioteca - Etapa 1
+# Sistema de Gerenciamento de Biblioteca
 
-Projeto desenvolvido para a atividade prática de **Arquiteturas de Software com Java**.
+Projeto da atividade pratica de **Arquiteturas de Software com Java**.
 
-Esta versão implementa a **Etapa 1 - Arquitetura em Camadas**, com separação entre domínio, infraestrutura, aplicação e apresentação.
+Este README foi organizado como **linha do tempo** para manter o historico da evolucao entre as etapas.
 
-## Tecnologias utilizadas
+## Linha do Tempo do Projeto
 
-- Java 17
-- Maven
-- Java puro, sem frameworks externos
-- Repositórios em memória com `HashMap`
+## Etapa 1 - Arquitetura em Camadas (Concluida)
 
-## Estrutura do projeto
+### Objetivo da etapa
+
+Separar o sistema em camadas com responsabilidades claras:
+- Dominio (regras de negocio)
+- Aplicacao (orquestracao de casos de uso)
+- Infraestrutura (persistencia em memoria)
+- Main como ponto de entrada da aplicacao
+
+### O que foi implementado
+
+- Entidades de dominio: `Livro`, `Usuario`, `Emprestimo`
+- Enums de estado: `SituacaoEmprestimo`, `SituacaoUsuario`
+- Servicos de aplicacao: `LivroServico`, `UsuarioServico`, `EmprestimoServico`
+- Repositorios em memoria com `HashMap`
+- Fluxo completo no console pela classe `Main`
+
+### Arquitetura atual (Etapa 1)
 
 ```text
 src/main/java/biblioteca/
@@ -21,21 +34,68 @@ src/main/java/biblioteca/
     Emprestimo.java
     SituacaoEmprestimo.java
     SituacaoUsuario.java
-  infraestrutura/
-    LivroRepositorio.java
-    UsuarioRepositorio.java
-    EmprestimoRepositorio.java
   aplicacao/
     LivroServico.java
     UsuarioServico.java
     EmprestimoServico.java
-  apresentacao/
-    Main.java
+  infraestrutura/
+    LivroRepositorio.java
+    UsuarioRepositorio.java
+    EmprestimoRepositorio.java
+  Main.java
 ```
 
-## Como compilar
+### Fluxo demonstrado no console
 
-Na raiz do projeto, execute:
+1. Cadastro de livro
+2. Cadastro de usuario
+3. Realizacao de emprestimo
+4. Listagem de emprestimos ativos
+5. Verificacao de atrasos
+6. Registro de devolucao
+
+### Decisoes de design da Etapa 1
+
+- Dominio sem dependencia de framework
+- Regra de disponibilidade no proprio `Livro`
+- Caso de uso principal centralizado em `EmprestimoServico`
+- Persistencia simples em memoria para foco arquitetural
+
+---
+
+## Etapa 2 - Adaptacao Arquitetural (Planejada)
+
+### Objetivo da etapa
+
+Evoluir da separacao em camadas para uma estrutura com menor acoplamento entre aplicacao e infraestrutura, sem perder as regras ja consolidadas na Etapa 1.
+
+### O que sera adicionado na Etapa 2
+
+- Interfaces de repositorio (portas) para a camada de aplicacao
+- Adaptadores de infraestrutura implementando essas interfaces
+- Dependencia dos servicos para interfaces, nao para classes concretas
+- Ajustes no `Main` para montar as dependencias na nova estrutura
+
+### O que permanece da Etapa 1
+
+- Entidades e regras de negocio do dominio
+- Fluxo funcional de emprestimo e devolucao
+- Repositorios em memoria (como primeira implementacao de adaptador)
+
+### Status atual
+
+- README preparado para timeline da evolucao
+- Implementacao da Etapa 2: **pendente** (sera feita na proxima fase)
+
+---
+
+## Tecnologias
+
+- Java 17
+- Maven
+- Java puro (sem frameworks externos)
+
+## Como compilar
 
 ```bash
 mvn clean compile
@@ -43,88 +103,6 @@ mvn clean compile
 
 ## Como executar
 
-Pelo IntelliJ, abra a classe abaixo e execute o método `main`:
-
-```text
-biblioteca.apresentacao.Main
-```
-
-Também é possível executar pelo terminal após compilar:
-
 ```bash
-java -cp target/classes biblioteca.apresentacao.Main
-```
-
-## Fluxo demonstrado no console
-
-A classe `Main` demonstra o fluxo completo exigido na atividade:
-
-1. Cadastro de livro
-2. Cadastro de usuário
-3. Realização de empréstimo
-4. Listagem de empréstimos ativos
-5. Verificação de atrasos
-6. Registro de devolução
-
-## Decisões de design
-
-### Domínio sem dependência de infraestrutura ou aplicação
-
-As classes do pacote `biblioteca.dominio` não importam classes das camadas `infraestrutura`, `aplicacao` ou `apresentacao`.
-
-Isso atende à restrição da Etapa 1, preservando o domínio como uma camada independente de detalhes externos.
-
-### Regra de negócio dentro da entidade Livro
-
-A regra de disponibilidade do livro foi implementada no método:
-
-```java
-public void realizarEmprestimo()
-```
-
-Esse método verifica se existe quantidade disponível antes de decrementar o estoque.
-
-### Repositórios em memória
-
-Os repositórios usam `HashMap` e implementam os métodos exigidos:
-
-- `salvar()`
-- `buscarPorId()`
-- `listarTodos()`
-- `remover()`
-
-### Serviços de aplicação
-
-A camada de aplicação coordena os casos de uso. O serviço principal é `EmprestimoServico`, contendo os métodos obrigatórios:
-
-- `realizarEmprestimo(Long usuarioId, Long livroId)`
-- `registrarDevolucao(Long emprestimoId)`
-- `listarEmprestimosAtivos()`
-- `verificarAtrasos()`
-
-## Observação sobre records
-
-Embora o projeto esteja configurado com Java 17, a Etapa 1 solicita que `Livro`, `Usuario` e `Emprestimo` sejam implementados como POJOs. Por isso, records não foram usados nesta etapa.
-
-Os records serão mais adequados para a Etapa 3, nos eventos `EmprestimoRealizadoEvento` e `DevolucaoRegistradaEvento`, conforme o enunciado.
-
-## Sugestão de commits para o repositório
-
-Como a atividade penaliza ausência de histórico no Git, uma sugestão de organização é:
-
-```text
-git add pom.xml README.md
-git commit -m "Configura projeto Java 17 com Maven"
-
-git add src/main/java/biblioteca/dominio
-git commit -m "Implementa entidades e enums do dominio"
-
-git add src/main/java/biblioteca/infraestrutura
-git commit -m "Implementa repositorios em memoria"
-
-git add src/main/java/biblioteca/aplicacao
-git commit -m "Implementa servicos e casos de uso da etapa 1"
-
-git add src/main/java/biblioteca/apresentacao
-git commit -m "Adiciona demonstracao do fluxo completo no console"
+java -cp target/classes biblioteca.Main
 ```
