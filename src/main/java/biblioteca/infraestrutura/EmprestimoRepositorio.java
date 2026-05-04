@@ -1,5 +1,6 @@
 package biblioteca.infraestrutura;
 
+import biblioteca.aplicacao.porta.saida.EmprestimoRepositorioPort;
 import biblioteca.dominio.Emprestimo;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class EmprestimoRepositorio {
+public class EmprestimoRepositorio implements EmprestimoRepositorioPort {
     private final Map<Long, Emprestimo> emprestimos = new HashMap<>();
 
     public void salvar(Emprestimo emprestimo) {

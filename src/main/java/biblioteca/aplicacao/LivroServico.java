@@ -1,14 +1,14 @@
 package biblioteca.aplicacao;
 
+import biblioteca.aplicacao.porta.saida.LivroRepositorioPort;
 import biblioteca.dominio.Livro;
-import biblioteca.infraestrutura.LivroRepositorio;
 
 import java.util.List;
 
 public class LivroServico {
-    private final LivroRepositorio livroRepositorio;
+    private final LivroRepositorioPort livroRepositorio;
 
-    public LivroServico(LivroRepositorio livroRepositorio) {
+    public LivroServico(LivroRepositorioPort livroRepositorio) {
         this.livroRepositorio = livroRepositorio;
     }
 
@@ -20,7 +20,7 @@ public class LivroServico {
 
     public Livro buscarPorId(Long id) {
         return livroRepositorio.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Livro não encontrado: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Livro nao encontrado: " + id));
     }
 
     public List<Livro> listarTodos() {

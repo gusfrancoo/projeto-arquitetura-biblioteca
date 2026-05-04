@@ -1,15 +1,15 @@
 package biblioteca.aplicacao;
 
+import biblioteca.aplicacao.porta.saida.UsuarioRepositorioPort;
 import biblioteca.dominio.SituacaoUsuario;
 import biblioteca.dominio.Usuario;
-import biblioteca.infraestrutura.UsuarioRepositorio;
 
 import java.util.List;
 
 public class UsuarioServico {
-    private final UsuarioRepositorio usuarioRepositorio;
+    private final UsuarioRepositorioPort usuarioRepositorio;
 
-    public UsuarioServico(UsuarioRepositorio usuarioRepositorio) {
+    public UsuarioServico(UsuarioRepositorioPort usuarioRepositorio) {
         this.usuarioRepositorio = usuarioRepositorio;
     }
 
@@ -21,7 +21,7 @@ public class UsuarioServico {
 
     public Usuario buscarPorId(Long id) {
         return usuarioRepositorio.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Usuario nao encontrado: " + id));
     }
 
     public List<Usuario> listarTodos() {

@@ -1,5 +1,6 @@
 package biblioteca.infraestrutura;
 
+import biblioteca.aplicacao.porta.saida.UsuarioRepositorioPort;
 import biblioteca.dominio.Usuario;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class UsuarioRepositorio {
+public class UsuarioRepositorio implements UsuarioRepositorioPort {
     private final Map<Long, Usuario> usuarios = new HashMap<>();
 
     public void salvar(Usuario usuario) {

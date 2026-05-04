@@ -1,5 +1,6 @@
 package biblioteca.infraestrutura;
 
+import biblioteca.aplicacao.porta.saida.LivroRepositorioPort;
 import biblioteca.dominio.Livro;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class LivroRepositorio {
+public class LivroRepositorio implements LivroRepositorioPort {
     private final Map<Long, Livro> livros = new HashMap<>();
 
     public void salvar(Livro livro) {

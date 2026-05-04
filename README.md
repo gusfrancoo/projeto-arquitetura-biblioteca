@@ -2,29 +2,68 @@
 
 Projeto da atividade pratica de **Arquiteturas de Software com Java**.
 
-Este README foi organizado como **linha do tempo** para manter o historico da evolucao entre as etapas.
+Este README esta em formato de **linha do tempo**, preservando o que foi feito em cada etapa.
 
-## Linha do Tempo do Projeto
+## Linha do Tempo
 
 ## Etapa 1 - Arquitetura em Camadas (Concluida)
 
-### Objetivo da etapa
+### Objetivo
 
 Separar o sistema em camadas com responsabilidades claras:
 - Dominio (regras de negocio)
 - Aplicacao (orquestracao de casos de uso)
 - Infraestrutura (persistencia em memoria)
-- Main como ponto de entrada da aplicacao
+- Main como ponto de entrada
 
-### O que foi implementado
+### Entregas da etapa
 
-- Entidades de dominio: `Livro`, `Usuario`, `Emprestimo`
-- Enums de estado: `SituacaoEmprestimo`, `SituacaoUsuario`
-- Servicos de aplicacao: `LivroServico`, `UsuarioServico`, `EmprestimoServico`
+- Entidades e enums de dominio
+- Servicos de aplicacao com fluxo de emprestimo/devolucao
 - Repositorios em memoria com `HashMap`
-- Fluxo completo no console pela classe `Main`
+- Demonstracao no console
 
-### Arquitetura atual (Etapa 1)
+### Estrutura da Etapa 1
+
+```text
+src/main/java/biblioteca/
+  dominio/
+  aplicacao/
+    LivroServico.java
+    UsuarioServico.java
+    EmprestimoServico.java
+  infraestrutura/
+    LivroRepositorio.java
+    UsuarioRepositorio.java
+    EmprestimoRepositorio.java
+  Main.java
+```
+
+---
+
+## Etapa 2 - Arquitetura Hexagonal (Concluida)
+
+### Objetivo
+
+Desacoplar casos de uso da infraestrutura usando **portas e adaptadores**.
+
+### O que mudou da Etapa 1 para a Etapa 2
+
+1. Foram criadas portas de saida na aplicacao:
+   - `LivroRepositorioPort`
+   - `UsuarioRepositorioPort`
+   - `EmprestimoRepositorioPort`
+2. Os servicos passaram a depender dessas interfaces (portas), e nao de classes concretas.
+3. Os repositorios em memoria viraram adaptadores de saida ao implementar as portas.
+4. O `Main` passou a montar a composicao da aplicacao conectando adaptadores aos casos de uso.
+
+### O que foi preservado
+
+- Regras de negocio do dominio
+- Fluxo funcional da Etapa 1
+- Persistencia em memoria como implementacao inicial dos adaptadores
+
+### Estrutura da Etapa 2
 
 ```text
 src/main/java/biblioteca/
@@ -38,14 +77,21 @@ src/main/java/biblioteca/
     LivroServico.java
     UsuarioServico.java
     EmprestimoServico.java
+    porta/
+      saida/
+        LivroRepositorioPort.java
+        UsuarioRepositorioPort.java
+        EmprestimoRepositorioPort.java
   infraestrutura/
-    LivroRepositorio.java
-    UsuarioRepositorio.java
-    EmprestimoRepositorio.java
-  Main.java
+    LivroRepositorio.java        (adaptador de saida)
+    UsuarioRepositorio.java      (adaptador de saida)
+    EmprestimoRepositorio.java   (adaptador de saida)
+  Main.java                      (composicao/entrada)
 ```
 
-### Fluxo demonstrado no console
+---
+
+## Fluxo demonstrado no console
 
 1. Cadastro de livro
 2. Cadastro de usuario
@@ -53,41 +99,6 @@ src/main/java/biblioteca/
 4. Listagem de emprestimos ativos
 5. Verificacao de atrasos
 6. Registro de devolucao
-
-### Decisoes de design da Etapa 1
-
-- Dominio sem dependencia de framework
-- Regra de disponibilidade no proprio `Livro`
-- Caso de uso principal centralizado em `EmprestimoServico`
-- Persistencia simples em memoria para foco arquitetural
-
----
-
-## Etapa 2 - Adaptacao Arquitetural (Planejada)
-
-### Objetivo da etapa
-
-Evoluir da separacao em camadas para uma estrutura com menor acoplamento entre aplicacao e infraestrutura, sem perder as regras ja consolidadas na Etapa 1.
-
-### O que sera adicionado na Etapa 2
-
-- Interfaces de repositorio (portas) para a camada de aplicacao
-- Adaptadores de infraestrutura implementando essas interfaces
-- Dependencia dos servicos para interfaces, nao para classes concretas
-- Ajustes no `Main` para montar as dependencias na nova estrutura
-
-### O que permanece da Etapa 1
-
-- Entidades e regras de negocio do dominio
-- Fluxo funcional de emprestimo e devolucao
-- Repositorios em memoria (como primeira implementacao de adaptador)
-
-### Status atual
-
-- README preparado para timeline da evolucao
-- Implementacao da Etapa 2: **pendente** (sera feita na proxima fase)
-
----
 
 ## Tecnologias
 
