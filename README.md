@@ -106,6 +106,42 @@ src/main/java/biblioteca/
 
 ---
 
+## Etapa 3 - Comunicacao Assincrona por Eventos (Concluida)
+
+### Objetivo
+
+Desacoplar efeitos colaterais dos casos de uso de emprestimo/devolucao usando publicacao e consumo de eventos.
+
+### O que foi implementado
+
+1. Eventos de dominio no pacote `dominio/evento`:
+   - `EmprestimoRealizadoEvento`
+   - `DevolucaoRegistradaEvento`
+2. `EventBus<T>` generico com `assinar(...)` e `publicar(...)`.
+3. `EmprestimoServico` publica eventos ao finalizar:
+   - `realizarEmprestimo(...)`
+   - `registrarDevolucao(...)`
+4. Consumidores independentes:
+   - `ServicoDeNotificacao` consome `EmprestimoRealizadoEvento` e notifica data prevista.
+   - `ServicoDeLog` consome os dois eventos e grava em `biblioteca.log`.
+5. `Main` registra os consumidores no `EventBus` e executa o fluxo sem chamada direta de handlers a partir do `EmprestimoServico`.
+
+### Estrutura adicionada na Etapa 3
+
+```text
+src/main/java/biblioteca/
+  dominio/
+    evento/
+      EmprestimoRealizadoEvento.java
+      DevolucaoRegistradaEvento.java
+      EventBus.java
+  infraestrutura/
+    ServicoDeNotificacao.java
+    ServicoDeLog.java
+```
+
+---
+
 ## Fluxo demonstrado no console
 
 1. Cadastro de livro
