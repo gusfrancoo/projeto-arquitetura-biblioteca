@@ -53,9 +53,16 @@ Desacoplar casos de uso da infraestrutura usando **portas e adaptadores**.
    - `LivroRepositorioPort`
    - `UsuarioRepositorioPort`
    - `EmprestimoRepositorioPort`
-2. Os servicos passaram a depender dessas interfaces (portas), e nao de classes concretas.
-3. Os repositorios em memoria viraram adaptadores de saida ao implementar as portas.
-4. O `Main` passou a montar a composicao da aplicacao conectando adaptadores aos casos de uso.
+   - `PortaNotificacao`
+2. Foi criada a porta de entrada `PortaEmprestimo`, implementada por `EmprestimoServico`.
+3. Os servicos passaram a depender dessas interfaces (portas), e nao de classes concretas.
+4. Para cada porta de repositorio, existem dois adaptadores:
+   - Memoria (`LivroRepositorio`, `UsuarioRepositorio`, `EmprestimoRepositorio`)
+   - CSV (`LivroRepositorioCsv`, `UsuarioRepositorioCsv`, `EmprestimoRepositorioCsv`)
+5. O `Main` demonstra a troca de adaptador em tempo de inicializacao:
+   - primeiro executa com memoria;
+   - depois executa com CSV;
+   - sem alterar regra de negocio dos servicos.
 
 ### O que foi preservado
 
@@ -78,15 +85,23 @@ src/main/java/biblioteca/
     UsuarioServico.java
     EmprestimoServico.java
     porta/
+      entrada/
+        PortaEmprestimo.java
       saida/
         LivroRepositorioPort.java
         UsuarioRepositorioPort.java
         EmprestimoRepositorioPort.java
+        PortaNotificacao.java
   infraestrutura/
     LivroRepositorio.java        (adaptador de saida)
+    LivroRepositorioCsv.java     (adaptador de saida)
     UsuarioRepositorio.java      (adaptador de saida)
+    UsuarioRepositorioCsv.java   (adaptador de saida)
     EmprestimoRepositorio.java   (adaptador de saida)
-  Main.java                      (composicao/entrada)
+    EmprestimoRepositorioCsv.java (adaptador de saida)
+    NotificacaoConsole.java      (adaptador de notificacao)
+  apresentacao/
+    Main.java                    (composicao/entrada)
 ```
 
 ---
@@ -115,5 +130,5 @@ mvn clean compile
 ## Como executar
 
 ```bash
-java -cp target/classes biblioteca.Main
+java -cp target/classes biblioteca.apresentacao.Main
 ```

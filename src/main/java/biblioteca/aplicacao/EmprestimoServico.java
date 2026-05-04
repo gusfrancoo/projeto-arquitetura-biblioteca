@@ -1,7 +1,9 @@
 package biblioteca.aplicacao;
 
+import biblioteca.aplicacao.porta.entrada.PortaEmprestimo;
 import biblioteca.aplicacao.porta.saida.EmprestimoRepositorioPort;
 import biblioteca.aplicacao.porta.saida.LivroRepositorioPort;
+import biblioteca.aplicacao.porta.saida.PortaNotificacao;
 import biblioteca.aplicacao.porta.saida.UsuarioRepositorioPort;
 import biblioteca.dominio.Emprestimo;
 import biblioteca.dominio.Livro;
@@ -13,22 +15,25 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class EmprestimoServico {
+public class EmprestimoServico implements PortaEmprestimo {
     private static final int PRAZO_PADRAO_DIAS = 7;
 
     private final UsuarioRepositorioPort usuarioRepositorio;
     private final LivroRepositorioPort livroRepositorio;
     private final EmprestimoRepositorioPort emprestimoRepositorio;
+    private final PortaNotificacao notificacao;
     private final AtomicLong geradorId = new AtomicLong(1);
 
     public EmprestimoServico(
             UsuarioRepositorioPort usuarioRepositorio,
             LivroRepositorioPort livroRepositorio,
-            EmprestimoRepositorioPort emprestimoRepositorio
+            EmprestimoRepositorioPort emprestimoRepositorio,
+            PortaNotificacao notificacao
     ) {
         this.usuarioRepositorio = usuarioRepositorio;
         this.livroRepositorio = livroRepositorio;
         this.emprestimoRepositorio = emprestimoRepositorio;
+        this.notificacao = notificacao;
     }
 
     public Emprestimo realizarEmprestimo(Long usuarioId, Long livroId) {
@@ -84,6 +89,7 @@ public class EmprestimoServico {
         atrasados.forEach(emprestimo -> {
             emprestimo.marcarComoAtrasado();
             emprestimoRepositorio.salvar(emprestimo);
+            notificacao.notificarAtraso(emprestimo.getUsuario(), emprestimo);
         });
 
         return atrasados;
